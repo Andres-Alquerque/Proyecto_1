@@ -11,7 +11,7 @@
 #include <cctype>
 #include <ctime>
 using namespace std;
-// Convierte string "DD/MM/AAAA HH:MM:ss.sss" a struct tm
+
 bool parseFechaHora(const char* fechaHora, struct tm &tm_out) {
     int dd, MM, yyyy, hh, mm, ss;
     if (sscanf(fechaHora, "%d/%d/%d %d:%d:%d", &dd, &MM, &yyyy, &hh, &mm, &ss) == 6) {
@@ -25,7 +25,7 @@ bool parseFechaHora(const char* fechaHora, struct tm &tm_out) {
     }
     return false;
 }
-// Retorna true si fecha1 > fecha2
+
 bool compararFechas(const char* fecha1, const char* fecha2) {
     struct tm tm1{}, tm2{};
     if (!parseFechaHora(fecha1, tm1) || !parseFechaHora(fecha2, tm2)) {
@@ -62,7 +62,7 @@ static bool rd_u64(FILE* f, uint64_t& v){
     for(int i=0;i<8;++i) v |= ((uint64_t)b[i]) << (8*i);
     return true;
 }
-// ===================== Tokenización =====================
+
 static bool split_line(const char* line, char sep, char*** tokens, int& n){
     *tokens=nullptr; n=0;
     if(!line) return false;
@@ -88,8 +88,8 @@ static void free_tokens(char** t, int n){
     if(!t) return; for(int i=0;i<n;++i) free(t[i]); free(t);
 }
 
-// ===================== Carga configuracion.txt =====================
-// ===================== Carga configuracion.txt =====================
+
+
 bool cargar_configuracion_txt(const char* ruta, ConfigData& cfg){
     cfg.items=nullptr; cfg.count=0;
     ifstream in(ruta);
@@ -210,7 +210,7 @@ void liberar_config(ConfigData& cfg){
     delete[] cfg.items; cfg.items=nullptr; cfg.count=0;
 }
 
-// ===================== Carga pacientes.csv =====================
+
 bool cargar_pacientes_txt(const char* ruta, PacientesData& pacs){
     pacs.items=nullptr; pacs.count=0;
     ifstream in(ruta);
@@ -252,7 +252,7 @@ void liberar_pacientes(PacientesData& pacs){
     delete[] pacs.items; pacs.items=nullptr; pacs.count=0;
 }
 
-// ===================== Leer BSF =====================
+
 static bool rd_u8 (FILE* f, unsigned char& v){ return fread(&v,1,1,f)==1; }
 static bool rd_u16(FILE* f, uint16_t& v){
     unsigned char b[2];
@@ -264,20 +264,12 @@ static bool rd_f32(FILE* f, float& v){ return fread(&v,1,4,f)==4; }
 static bool rd_f64(FILE* f, double& v){ return fread(&v,1,8,f)==8; }
 static bool rd_bytes(FILE* f, void* buf, size_t n){ return fread(buf,1,n,f)==n; }
 
-// Implementación drop-in que reemplaza a leer_bsf si quieres.
-// Lee exactamente:
-// sala_id (u8), nmaq (u8)
-//   por maq: maq_id (u8), nmed (u16 LE)
-//     por medición: idPaciente (u8), fecha[32] (bytes ASCII, padded con \0), nLect (u16 LE)
-//       por lectura: tipo (u8) y luego:
-//         - si tipo=='P'  => p_sis (float32), p_dia (float32)
-//         - si tipo!='P'  => valor (double64)
 
-// ---------- implementación robusta de leer_bsf (core con puntero) ----------
-static constexpr uint32_t MAX_MEDICIONES_POR_MAQUINA = 100000;    // límite razonable
-static constexpr uint32_t MAX_LECTURAS_POR_MEDICION = 100000;    // límite razonable
 
-// Habilita para ver muchos mensajes de depuración
+static constexpr uint32_t MAX_MEDICIONES_POR_MAQUINA = 100000;
+static constexpr uint32_t MAX_LECTURAS_POR_MEDICION = 100000;
+
+
 static const bool DEBUG_BSF = true;
 
 bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
@@ -287,7 +279,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
         return false;
     }
 
-    // ---- Leer Sala (1 byte id, 1 byte num maquinas) ----
+
     uint8_t idSala = 0;
     uint8_t nmaq = 0;
     if (!archivo.read(reinterpret_cast<char*>(&idSala), sizeof(idSala))) {
@@ -304,26 +296,26 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
 
     if (DEBUG_BSF) std::cout << "DEBUG: Sala ID=" << (int)sala.id << " nmaq=" << (int)sala.nmaq << "\n";
 
-    // reservar máquinas
+
     if (sala.nmaq > 0) {
         sala.maquinas = new MaquinaUCI[sala.nmaq];
     } else {
         sala.maquinas = nullptr;
     }
 
-    // ---- Por cada máquina ----
+
     for (int i = 0; i < sala.nmaq; ++i) {
-        // id máquina (1 byte)
+
         uint8_t maqId = 0;
         if (!archivo.read(reinterpret_cast<char*>(&maqId), sizeof(maqId))) {
             std::cerr << "Error leyendo id de maquina " << i << "\n";
-            // limpiar antes de salir
+
             liberar_sala(sala);
             return false;
         }
         sala.maquinas[i].id = maqId;
 
-        // numMediciones (4 bytes) -> usar uint32_t
+
         uint32_t numMed = 0;
         if (!archivo.read(reinterpret_cast<char*>(&numMed), sizeof(numMed))) {
             std::cerr << "Error leyendo numMediciones de maquina " << (int)maqId << "\n";
@@ -331,7 +323,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
             return false;
         }
 
-        // comprobación de límites para evitar lecturas absurdas
+
         if (numMed > MAX_MEDICIONES_POR_MAQUINA) {
             std::cerr << "Valor numMediciones demasiado grande (" << numMed
                       << ") en maquina " << (int)maqId << ". Posible archivo corrupto.\n";
@@ -343,18 +335,18 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
 
         if (DEBUG_BSF) std::cout << "DEBUG: Maquina " << (int)maqId << " numMediciones=" << numMed << "\n";
 
-        // reservar array de mediciones (si numMed == 0 queda nullptr)
+
         if (numMed > 0) {
             sala.maquinas[i].mediciones = new Medicion[numMed];
         } else {
             sala.maquinas[i].mediciones = nullptr;
         }
 
-        // ---- Por cada medición de la máquina ----
+
         for (uint32_t j = 0; j < numMed; ++j) {
             Medicion &med = sala.maquinas[i].mediciones[j];
 
-            // 11 bytes: idPaciente (c-string fija) -> leer en buffer temporal para asegurar null-terminator
+
             char tmpId[12]; // 11 bytes + 1 para '\0'
             if (!archivo.read(tmpId, 11)) {
                 std::cerr << "Error leyendo idPaciente (maq " << (int)maqId << " med " << j+1 << ")\n";
@@ -363,15 +355,14 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
             }
             tmpId[11] = '\0';
 
-            // Copiar al campo del struct *con cuidado* (si med.idPaciente es char[11] o similar)
-            // usamos sizeof para copiar sólo lo que quepa en el campo
-            size_t idFieldSize = sizeof(med.idPaciente); // esto sólo funciona si idPaciente es array (no puntero)
+
+            size_t idFieldSize = sizeof(med.idPaciente);
             size_t toCopy = std::min((size_t)11, idFieldSize);
             std::memcpy(med.idPaciente, tmpId, toCopy);
-            // aseguramos terminador dentro del campo (último byte del campo)
+
             med.idPaciente[idFieldSize - 1] = '\0';
 
-            // 24 bytes: fecha y hora
+
             char tmpFecha[25]; // 24 + 1
             if (!archivo.read(tmpFecha, 24)) {
                 std::cerr << "Error leyendo fecha (maq " << (int)maqId << " med " << j+1 << ")\n";
@@ -384,7 +375,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
             std::memcpy(med.fecha, tmpFecha, toCopyF);
             med.fecha[fechaFieldSize - 1] = '\0';
 
-            // 4 bytes: numero de lecturas (uint32_t)
+
             uint32_t numLect = 0;
             if (!archivo.read(reinterpret_cast<char*>(&numLect), sizeof(numLect))) {
                 std::cerr << "Error leyendo numLecturas (maq " << (int)maqId << " med " << j+1 << ")\n";
@@ -408,14 +399,14 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
                           << " | Lecturas=" << med.numLecturas << "\n";
             }
 
-            // reservar lecturas (o poner nullptr si 0)
+
             if (numLect > 0) {
                 med.lecturas = new Lectura[numLect];
             } else {
                 med.lecturas = nullptr;
             }
 
-            // inicializar campos por seguridad
+
             for (uint32_t k = 0; k < numLect; ++k) {
                 med.lecturas[k].tipo = 0;
                 med.lecturas[k].valor = 0.0;
@@ -423,11 +414,11 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
                 med.lecturas[k].p_dia = 0;
             }
 
-            // ---- Lecturas ----
+
             for (uint32_t k = 0; k < numLect; ++k) {
                 Lectura &lec = med.lecturas[k];
 
-                // 1 byte: tipo
+
                 char tipo = 0;
                 if (!archivo.read(reinterpret_cast<char*>(&tipo), 1)) {
                     std::cerr << "Error leyendo tipo lectura (maq " << (int)maqId << " med " << j+1 << " lec " << k+1 << ")\n";
@@ -437,7 +428,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
                 lec.tipo = tipo;
 
                 if (tipo == 'P') {
-                    // presión: dos enteros (int32_t)
+
                     int32_t ps = 0, pd = 0;
                     if (!archivo.read(reinterpret_cast<char*>(&ps), sizeof(ps)) ||
                         !archivo.read(reinterpret_cast<char*>(&pd), sizeof(pd))) {
@@ -471,9 +462,9 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
                     else
                         std::cout << "  DEBUG Lectura " << lec.tipo << ": " << lec.valor << "\n";
                 }
-            } // fin lecturas
-        } // fin mediciones
-    } // fin maquinas
+            }
+        }
+    }
 
     archivo.close();
     return true;
@@ -491,7 +482,7 @@ void liberar_sala(SalaUCI& sala){
     delete[] sala.maquinas; sala.maquinas=nullptr; sala.nmaq=0; sala.id=0;
 }
 
-// ===================== Util: buscar rango en config =====================
+
 bool cfg_get(const ConfigData& cfg, const char* clave, double& mn, double& mx){
     for(int i=0;i<cfg.count;++i){
         if(strcmp(cfg.items[i].tipo, clave)==0){
@@ -501,7 +492,7 @@ bool cfg_get(const ConfigData& cfg, const char* clave, double& mn, double& mx){
     return false;
 }
 
-// ===================== Reporte anomalias global =====================
+
 bool reporte_anomalias_global(const SalaUCI& sala, const ConfigData& cfg, const char* rutaTxt) {
     ofstream out(rutaTxt);
     if (!out.is_open()) {
@@ -593,7 +584,7 @@ bool reporte_anomalias_global(const SalaUCI& sala, const ConfigData& cfg, const 
     return true;
 }
 
-// ===================== Reporte por paciente =====================
+
 void reporte_mediciones_paciente(const SalaUCI &sala, const ConfigData &cfg, const char* idPaciente) {
 
     char filename[64];
@@ -679,7 +670,7 @@ void reporte_mediciones_paciente(const SalaUCI &sala, const ConfigData &cfg, con
     cout << "Reporte generado en " << filename << endl;
 }
 
-// ===================== Exportar ECG anómalos =====================
+
 bool exportar_pacientes_ecg_anomalos(const SalaUCI& sala, const PacientesData& pacs,
                                      const ConfigData& cfg, const char* rutaBin){
     double mnE,mxE; if(!cfg_get(cfg,"E",mnE,mxE)) return false;

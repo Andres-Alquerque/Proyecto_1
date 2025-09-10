@@ -12,19 +12,19 @@ bool escribir_bsf(const char* ruta){
     FILE* f = fopen(ruta, "wb");
     if(!f) return false;
 
-    // Sala
+
     unsigned char sala_id = 1;
     unsigned char nmaq = 1;  // solo 1 máquina por ahora
     fwrite(&sala_id, 1, 1, f);
     fwrite(&nmaq, 1, 1, f);
 
-    // ===== Maquina 1 =====
+
     unsigned char maq_id = 10;
     uint16_t nmed = 1;  // solo 1 medición
     fwrite(&maq_id, 1, 1, f);
     fwrite(&nmed, 1, 2, f);
 
-    // ===== Medicion =====
+
     unsigned char pid = 5;  // id paciente
     char fecha[32] = "31/08/2025 12:00:00";
     uint16_t nlect = 2; // dos lecturas
@@ -32,13 +32,13 @@ bool escribir_bsf(const char* ruta){
     fwrite(fecha, 1, 32, f);
     fwrite(&nlect, 1, 2, f);
 
-    // Lectura 1 (Temperatura normal)
+
     unsigned char tipo1 = 'T';   // TS_T
     double temp = 37.2;
     fwrite(&tipo1, 1, 1, f);
     fwrite(&temp, 1, 8, f);
 
-    // Lectura 2 (Presión arterial)
+
     unsigned char tipo2 = 'P';   // TS_P
     float sis = 120.0, dia = 80.0;
     fwrite(&tipo2, 1, 1, f);
@@ -50,8 +50,7 @@ bool escribir_bsf(const char* ruta){
 }
 
 int main(){
-    //
-    // Generar archivo de prueba
+
     if(escribir_bsf("test.bsf"))
         cout << "Archivo test.bsf creado correctamente\n";
     else
@@ -61,7 +60,7 @@ int main(){
     ConfigData cfg{}; cfg.items=nullptr; cfg.count=0;
     PacientesData pacs{}; pacs.items=nullptr; pacs.count=0;
 
-    // Rutas por defecto (ajústalas si quieres)
+
     const char* rutaConfig    = "configuracion.txt";
     const char* rutaPacientes = "pacientes.csv";
     const char* rutaBSF = "patient_readings_simulation_small 1.bsf";
@@ -155,15 +154,15 @@ int main(){
             cout << "Además, id paciente para reporte: ";
             cin >> x;
 
-            // Convertimos el id a string (C-string)
+
             char idPaciente[16];
             snprintf(idPaciente, sizeof(idPaciente), "%u", x);
 
-            // Construimos el nombre del archivo
+
             char rutaSal[128];
             snprintf(rutaSal, sizeof(rutaSal), "mediciones_paciente_%u.txt", x);
 
-            // Llamada correcta
+
             try {
                 reporte_mediciones_paciente(sala, cfg, idPaciente);
                 cout << "Reporte generado: " << rutaSal << "\n";

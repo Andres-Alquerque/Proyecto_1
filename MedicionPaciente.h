@@ -5,7 +5,7 @@
 
 struct Medicion {
     char idPaciente[11];
-    char fecha[24];        // ASCII, llenado con \0
+    char fecha[24];
     unsigned int  numLecturas;
     Lectura* lecturas;
 };
