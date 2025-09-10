@@ -2,7 +2,7 @@
 #define ARCHIVO_CONFIGURACION_H
 
 struct Configuracion {
-    char tipo[8];     // "T","P_SIS","P_DIA","E","O"
+    char tipo[8];
     double minVal;
     double maxVal;
 };
