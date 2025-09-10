@@ -273,194 +273,47 @@ static constexpr uint32_t MAX_LECTURAS_POR_MEDICION = 100000;
 static const bool DEBUG_BSF = true;
 
 bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
-    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo.is_open()) {
-        std::cerr << "Error: no se pudo abrir " << nombreArchivo << "\n";
+        cerr << "Error: no se pudo abrir el archivo " << nombreArchivo << endl;
         return false;
     }
 
+    // ---- Sala ----
+    archivo.read(reinterpret_cast<char*>(&sala.id), sizeof(sala.id));
+    archivo.read(reinterpret_cast<char*>(&sala.nmaq), sizeof(sala.nmaq));
+    sala.maquinas = new MaquinaUCI[sala.nmaq];
 
-    uint8_t idSala = 0;
-    uint8_t nmaq = 0;
-    if (!archivo.read(reinterpret_cast<char*>(&idSala), sizeof(idSala))) {
-        std::cerr << "Error leyendo idSala\n";
-        return false;
-    }
-    if (!archivo.read(reinterpret_cast<char*>(&nmaq), sizeof(nmaq))) {
-        std::cerr << "Error leyendo nmaq\n";
-        return false;
-    }
+    // ---- Máquinas ----
+    for (int i = 0; i < sala.nmaq; i++) {
+        archivo.read(reinterpret_cast<char*>(&sala.maquinas[i].id), sizeof(sala.maquinas[i].id));
+        archivo.read(reinterpret_cast<char*>(&sala.maquinas[i].numMediciones), sizeof(sala.maquinas[i].numMediciones));
 
-    sala.id = idSala;
-    sala.nmaq = nmaq;
+        sala.maquinas[i].mediciones = new Medicion[sala.maquinas[i].numMediciones];
 
-    if (DEBUG_BSF) std::cout << "DEBUG: Sala ID=" << (int)sala.id << " nmaq=" << (int)sala.nmaq << "\n";
+        // ---- Mediciones ----
+        for (unsigned int j = 0; j < sala.maquinas[i].numMediciones; j++) {
+            Medicion& med = sala.maquinas[i].mediciones[j];
 
+            archivo.read(med.idPaciente, 11);
+            med.idPaciente[10] = '\0';
 
-    if (sala.nmaq > 0) {
-        sala.maquinas = new MaquinaUCI[sala.nmaq];
-    } else {
-        sala.maquinas = nullptr;
-    }
+            archivo.read(med.fecha, 24);
+            med.fecha[23] = '\0';
 
+            archivo.read(reinterpret_cast<char*>(&med.numLecturas), sizeof(med.numLecturas));
+            med.lecturas = new Lectura[med.numLecturas];
 
-    for (int i = 0; i < sala.nmaq; ++i) {
+            // ---- Lecturas ----
+            for (unsigned int k = 0; k < med.numLecturas; k++) {
+                Lectura& lec = med.lecturas[k];
+                archivo.read(reinterpret_cast<char*>(&lec.tipo), sizeof(lec.tipo));
 
-        uint8_t maqId = 0;
-        if (!archivo.read(reinterpret_cast<char*>(&maqId), sizeof(maqId))) {
-            std::cerr << "Error leyendo id de maquina " << i << "\n";
-
-            liberar_sala(sala);
-            return false;
-        }
-        sala.maquinas[i].id = maqId;
-
-
-        uint32_t numMed = 0;
-        if (!archivo.read(reinterpret_cast<char*>(&numMed), sizeof(numMed))) {
-            std::cerr << "Error leyendo numMediciones de maquina " << (int)maqId << "\n";
-            liberar_sala(sala);
-            return false;
-        }
-
-
-        if (numMed > MAX_MEDICIONES_POR_MAQUINA) {
-            std::cerr << "Valor numMediciones demasiado grande (" << numMed
-                      << ") en maquina " << (int)maqId << ". Posible archivo corrupto.\n";
-            liberar_sala(sala);
-            return false;
-        }
-
-        sala.maquinas[i].numMediciones = numMed;
-
-        if (DEBUG_BSF) std::cout << "DEBUG: Maquina " << (int)maqId << " numMediciones=" << numMed << "\n";
-
-
-        if (numMed > 0) {
-            sala.maquinas[i].mediciones = new Medicion[numMed];
-        } else {
-            sala.maquinas[i].mediciones = nullptr;
-        }
-
-
-        for (uint32_t j = 0; j < numMed; ++j) {
-            Medicion &med = sala.maquinas[i].mediciones[j];
-
-
-            char tmpId[12]; // 11 bytes + 1 para '\0'
-            if (!archivo.read(tmpId, 11)) {
-                std::cerr << "Error leyendo idPaciente (maq " << (int)maqId << " med " << j+1 << ")\n";
-                liberar_sala(sala);
-                return false;
-            }
-            tmpId[11] = '\0';
-
-
-            size_t idFieldSize = sizeof(med.idPaciente);
-            size_t toCopy = std::min((size_t)11, idFieldSize);
-            std::memcpy(med.idPaciente, tmpId, toCopy);
-
-            med.idPaciente[idFieldSize - 1] = '\0';
-
-
-            char tmpFecha[25];
-            if (!archivo.read(tmpFecha, 24)) {
-                std::cerr << "Error leyendo fecha (maq " << (int)maqId << " med " << j+1 << ")\n";
-                liberar_sala(sala);
-                return false;
-            }
-            tmpFecha[24] = '\0';
-            size_t fechaFieldSize = sizeof(med.fecha);
-            size_t toCopyF = std::min((size_t)24, fechaFieldSize);
-            std::memcpy(med.fecha, tmpFecha, toCopyF);
-            med.fecha[fechaFieldSize - 1] = '\0';
-
-
-            uint32_t numLect = 0;
-            if (!archivo.read(reinterpret_cast<char*>(&numLect), sizeof(numLect))) {
-                std::cerr << "Error leyendo numLecturas (maq " << (int)maqId << " med " << j+1 << ")\n";
-                liberar_sala(sala);
-                return false;
-            }
-
-            if (numLect > MAX_LECTURAS_POR_MEDICION) {
-                std::cerr << "Valor numLecturas demasiado grande (" << numLect
-                          << ") en maq " << (int)maqId << " med " << j+1 << ". Archivo corrupto?\n";
-                liberar_sala(sala);
-                return false;
-            }
-
-            med.numLecturas = numLect;
-
-            if (DEBUG_BSF) {
-                std::cout << "DEBUG: Med " << j+1
-                          << " | Paciente='" << med.idPaciente << "'"
-                          << " | Fecha='" << med.fecha << "'"
-                          << " | Lecturas=" << med.numLecturas << "\n";
-            }
-
-
-            if (numLect > 0) {
-                med.lecturas = new Lectura[numLect];
-            } else {
-                med.lecturas = nullptr;
-            }
-
-
-            for (uint32_t k = 0; k < numLect; ++k) {
-                med.lecturas[k].tipo = 0;
-                med.lecturas[k].valor = 0.0;
-                med.lecturas[k].p_sis = 0;
-                med.lecturas[k].p_dia = 0;
-            }
-
-
-            for (uint32_t k = 0; k < numLect; ++k) {
-                Lectura &lec = med.lecturas[k];
-
-
-                char tipo = 0;
-                if (!archivo.read(reinterpret_cast<char*>(&tipo), 1)) {
-                    std::cerr << "Error leyendo tipo lectura (maq " << (int)maqId << " med " << j+1 << " lec " << k+1 << ")\n";
-                    liberar_sala(sala);
-                    return false;
-                }
-                lec.tipo = tipo;
-
-                if (tipo == 'P') {
-
-                    int32_t ps = 0, pd = 0;
-                    if (!archivo.read(reinterpret_cast<char*>(&ps), sizeof(ps)) ||
-                        !archivo.read(reinterpret_cast<char*>(&pd), sizeof(pd))) {
-                        std::cerr << "Error leyendo P syst/dia (maq " << (int)maqId << " med " << j+1 << " lec " << k+1 << ")\n";
-                        liberar_sala(sala);
-                        return false;
-                    }
-                    lec.p_sis = static_cast<int>(ps);
-                    lec.p_dia = static_cast<int>(pd);
-                }
-                else if (tipo == 'T' || tipo == 'E' || tipo == 'O') {
-
-                    double v = 0.0;
-                    if (!archivo.read(reinterpret_cast<char*>(&v), sizeof(v))) {
-                        std::cerr << "Error leyendo double (maq " << (int)maqId << " med " << j+1 << " lec " << k+1 << ")\n";
-                        liberar_sala(sala);
-                        return false;
-                    }
-                    lec.valor = v;
-                }
-                else {
-                    std::cerr << "Tipo desconocido '" << tipo << "' en maq " << (int)maqId
-                              << " med " << j+1 << " lec " << k+1 << ". Abortando.\n";
-                    liberar_sala(sala);
-                    return false;
-                }
-
-                if (DEBUG_BSF) {
-                    if (lec.tipo == 'P')
-                        std::cout << "  DEBUG Lectura P: " << lec.p_sis << "/" << lec.p_dia << "\n";
-                    else
-                        std::cout << "  DEBUG Lectura " << lec.tipo << ": " << lec.valor << "\n";
+                if (lec.tipo == 'P') {
+                    archivo.read(reinterpret_cast<char*>(&lec.p_sis), sizeof(int));
+                    archivo.read(reinterpret_cast<char*>(&lec.p_dia), sizeof(int));
+                } else {
+                    archivo.read(reinterpret_cast<char*>(&lec.valor), sizeof(double));
                 }
             }
         }
@@ -469,6 +322,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
     archivo.close();
     return true;
 }
+
 void liberar_sala(SalaUCI& sala){
     if(!sala.maquinas){ sala.nmaq=0; return; }
     for(int i=0;i<sala.nmaq;++i){
@@ -580,7 +434,7 @@ bool reporte_anomalias_global(const SalaUCI& sala, const ConfigData& cfg, const 
     }
 
     out.close();
-    cout << "Archivo de anomalías generado en " << rutaTxt << endl;
+    cout << "Archivo de anomalias generado en " << rutaTxt << endl;
     return true;
 }
 
@@ -676,6 +530,7 @@ bool exportar_pacientes_ecg_anomalos(const SalaUCI& sala, const PacientesData& p
     double mnE,mxE; if(!cfg_get(cfg,"E",mnE,mxE)) return false;
 
     bool marca[256]={false};
+
 
     for(int i=0;i<sala.nmaq;++i){
         const MaquinaUCI& MQ=sala.maquinas[i];

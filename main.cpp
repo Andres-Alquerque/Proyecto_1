@@ -92,51 +92,48 @@ int main(){
             liberar_sala(sala);
             if(!leer_bsf(rutaBSF, sala)){
                 cout << "No se pudo leer " << rutaBSF << "\n";
-            }else{
+            } else {
                 cout << "Sala " << (int)sala.id << " con " << (int)sala.nmaq << " maquinas.\n";
-
                 for(int i=0; i<sala.nmaq; i++){
                     MaquinaUCI& maq = sala.maquinas[i];
                     cout << "  Maquina " << (int)maq.id << " con " << maq.numMediciones << " mediciones.\n";
 
                     for(int j=0; j<maq.numMediciones; j++){
                         Medicion& med = maq.mediciones[j];
-                        cout << "    Medicion " << j+1;
-                        cout << "Paciente: " << med.idPaciente
+                        cout << "    Medicion " << j+1
+                             << " | Paciente: " << med.idPaciente
                              << " | Fecha: " << med.fecha
                              << " | Lecturas: " << med.numLecturas << "\n";
 
                         for(int k=0; k<med.numLecturas; k++){
                             Lectura& lec = med.lecturas[k];
-                            if(lec.tipo == TS_P){
+                            if(lec.tipo == 'P'){
                                 cout << "       Lectura P: " << lec.p_sis << "/" << lec.p_dia << "\n";
-                            }else{
-                                cout << "       Lectura " << (char)lec.tipo << ": " << lec.valor << "\n";
+                            } else {
+                                cout << "       Lectura " << lec.tipo << ": " << lec.valor << "\n";
                             }
                         }
                     }
                 }
             }
-        } else if(op==3){
+        }
+        else if(op==3){
             if(!reporte_anomalias_global(sala, cfg, "anomalias.txt"))
                 cout << "Fallo generando anomalias.txt\n";
             else
                 cout << "anomalias.txt generado.\n";
 
         }  else if (op == 4) {
-            int x; // Id numérico del paciente
+            int x;
             cout << "Id de paciente (1..255): ";
             cin >> x;
 
-            // Convertimos el id a cadena
             char idPaciente[16];
             snprintf(idPaciente, sizeof(idPaciente), "%d", x);
 
-            // Ruta de salida para el reporte
             char rutaSal[128];
             snprintf(rutaSal, sizeof(rutaSal), "mediciones_paciente_%d.txt", x);
 
-            // Llamada correcta a la función
             try {
                 reporte_mediciones_paciente(sala, cfg, idPaciente);
                 cout << "Reporte generado: " << rutaSal << "\n";
@@ -150,7 +147,7 @@ int main(){
                 cout << "Export OK: pacientes_ecg_anomalos.dat\n";
 
             unsigned x;
-            cout << "Además, id paciente para reporte: ";
+            cout << "Ademas, id paciente para reporte: ";
             cin >> x;
 
 
