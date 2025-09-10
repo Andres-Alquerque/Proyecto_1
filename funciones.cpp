@@ -29,7 +29,7 @@ bool parseFechaHora(const char* fechaHora, struct tm &tm_out) {
 bool compararFechas(const char* fecha1, const char* fecha2) {
     struct tm tm1{}, tm2{};
     if (!parseFechaHora(fecha1, tm1) || !parseFechaHora(fecha2, tm2)) {
-        return false; // si falla parseo
+        return false;
     }
     time_t t1 = mktime(&tm1);
     time_t t2 = mktime(&tm2);
@@ -103,7 +103,7 @@ bool cargar_configuracion_txt(const char* ruta, ConfigData& cfg){
     string line;
     int nValidas = 0;
 
-    // ===== Primera pasada: contar líneas válidas =====
+
     streampos inicio = in.tellg();
     bool first = true;
     while(getline(in,line)){
@@ -121,7 +121,7 @@ bool cargar_configuracion_txt(const char* ruta, ConfigData& cfg){
     cfg.items = new Configuracion[nValidas];
     cfg.count = 0;
 
-    // ===== Segunda pasada: parsear =====
+
     in.clear();
     in.seekg(inicio);
     first = true;
@@ -157,7 +157,7 @@ bool cargar_configuracion_txt(const char* ruta, ConfigData& cfg){
             }
         }
 
-        // ---- parser tolerante con puntos ----
+
         if(!parsed){
             size_t p0=line.find('.');
             if(p0!=string::npos){
@@ -229,7 +229,7 @@ bool cargar_pacientes_txt(const char* ruta, PacientesData& pacs){
         if(line.empty()||line[0]=='#') continue;
         char** toks; int n;
         if(!split_line(line.c_str(), ';', &toks, n)) continue;
-        // Esperados: id; tipoDoc; documento; nombres; apellidos; fechaNac; ...
+
         if(n>=6){
             arr[idx].idCSV = atoi(toks[0]);
             arr[idx].idBSF = (unsigned char)(arr[idx].idCSV & 0xFF);
@@ -500,7 +500,7 @@ bool reporte_anomalias_global(const SalaUCI& sala, const ConfigData& cfg, const 
         return false;
     }
 
-    // Cargar umbrales desde configuración
+
     double mnT, mxT, mnE, mxE, mnO, mxO, mnPS, mxPS, mnPD, mxPD;
     bool hasT  = cfg_get(cfg, "T", mnT, mxT);
     bool hasE  = cfg_get(cfg, "E", mnE, mxE);
@@ -519,7 +519,7 @@ bool reporte_anomalias_global(const SalaUCI& sala, const ConfigData& cfg, const 
             out << "Paciente " << M.idPaciente
                 << " | Fecha " << M.fecha << "\n";
 
-            // ---- Revisar lecturas T, O, P ----
+
             for (unsigned int k = 0; k < M.numLecturas; ++k) {
                 const Lectura& L = M.lecturas[k];
                 if (L.tipo == 'T' && hasT) {
@@ -543,7 +543,7 @@ bool reporte_anomalias_global(const SalaUCI& sala, const ConfigData& cfg, const 
                 }
             }
 
-            // ---- Revisar ECG (condición especial Sprint 4) ----
+
             if (hasE) {
                 double minVal =  1e300;
                 double maxVal = -1e300;
@@ -604,13 +604,13 @@ void reporte_mediciones_paciente(const SalaUCI &sala, const ConfigData &cfg, con
 
             fout << "Fecha: " << M.fecha << "\n";
 
-            // ---- Variables para estadísticas ----
+
             double sumT=0,minT=1e9,maxT=-1e9; int cntT=0;
             double sumO=0,minO=1e9,maxO=-1e9; int cntO=0;
             double sumPS=0,sumPD=0; int cntP=0;
             double minPS=1e9,maxPS=-1e9,minPD=1e9,maxPD=-1e9;
 
-            // --- Revisar lecturas ---
+
             for (unsigned int k=0; k<M.numLecturas; ++k) {
                 const Lectura &L = M.lecturas[k];
                 if (L.tipo=='T') {
@@ -642,13 +642,13 @@ void reporte_mediciones_paciente(const SalaUCI &sala, const ConfigData &cfg, con
                 }
             }
 
-            // --- Estadísticas finales ---
+
             if(cntT) fout << " Temp[min="<<minT<<", max="<<maxT<<", prom="<<(sumT/cntT)<<"]\n";
             if(cntO) fout << " Oxi[min="<<minO<<", max="<<maxO<<", prom="<<(sumO/cntO)<<"]\n";
             if(cntP) fout << " P.sis[min="<<minPS<<", max="<<maxPS<<", prom="<<(sumPS/cntP)<<"], "
                           << "P.dia[min="<<minPD<<", max="<<maxPD<<", prom="<<(sumPD/cntP)<<"]\n";
 
-            // --- ECG anomalía (Sprint 4) ---
+
             double minVal=1e9,maxVal=-1e9; bool tieneECG=false;
             double limInf=0,limSup=0;
             cfg_get(cfg, "E", limInf, limSup);
@@ -674,7 +674,7 @@ void reporte_mediciones_paciente(const SalaUCI &sala, const ConfigData &cfg, con
 bool exportar_pacientes_ecg_anomalos(const SalaUCI& sala, const PacientesData& pacs,
                                      const ConfigData& cfg, const char* rutaBin){
     double mnE,mxE; if(!cfg_get(cfg,"E",mnE,mxE)) return false;
-    // Marca si un paciente tiene algún ECG anómalo
+
     bool marca[256]={false};
 
     for(int i=0;i<sala.nmaq;++i){
@@ -690,7 +690,7 @@ bool exportar_pacientes_ecg_anomalos(const SalaUCI& sala, const PacientesData& p
             }
         }
     }
-    // Escribimos binario simple: cantidad (u16) + ids (u8)
+
     FILE* f=fopen(rutaBin,"wb");
     if(!f) return false;
     uint16_t c=0; for(int i=0;i<256;++i) if(marca[i]) c++;
