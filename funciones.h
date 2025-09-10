@@ -8,7 +8,6 @@
 
 struct SalaUCI;
 
-
 bool cargar_configuracion_txt(const char* ruta, ConfigData& cfg);
 bool cargar_pacientes_txt(const char* ruta, PacientesData& pacs);
 void liberar_config(ConfigData& cfg);

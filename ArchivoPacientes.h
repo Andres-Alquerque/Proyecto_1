@@ -1,7 +1,6 @@
 #ifndef ARCHIVO_PACIENTES_H
 #define ARCHIVO_PACIENTES_H
 
-// CSV: id; tipoDoc; documento; nombres; apellidos; fechaNac; ...
 struct ArchivoPacientes {
     unsigned char idBSF; // id 1 byte para BSF (mapeado desde idCSV&0xFF)
     int  idCSV;

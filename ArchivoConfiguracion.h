@@ -6,7 +6,6 @@ struct Configuracion {
     double minVal;
     double maxVal;
 };
-
 struct ConfigData {
     Configuracion* items;
     int count;

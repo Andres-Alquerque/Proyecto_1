@@ -1,6 +1,5 @@
 #ifndef MEDICION_PACIENTE_H
 #define MEDICION_PACIENTE_H
-
 #include "LecturaSensor.h"
 
 struct Medicion {

@@ -1,6 +1,5 @@
 #ifndef MAQUINA_UCI_H
 #define MAQUINA_UCI_H
-
 #include "MedicionPaciente.h"
 
 struct MaquinaUCI {

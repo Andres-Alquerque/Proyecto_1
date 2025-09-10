@@ -48,7 +48,6 @@ bool escribir_bsf(const char* ruta){
     fclose(f);
     return true;
 }
-
 int main(){
 
     if(escribir_bsf("test.bsf"))

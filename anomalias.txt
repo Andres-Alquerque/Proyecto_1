@@ -1,78 +1,73 @@
 ==== REPORTE GLOBAL DE ANOMALIAS ====
 Paciente 1 | Fecha 25/06/2025 01:00:00.000
   Anomalia T: 39.8
-  Anomalia P: 1.49939e-43/1.23314e-43
 -------------------------
 Paciente 1 | Fecha 25/06/2025 02:00:00.000
-  Anomalia P: 1.45735e-43/1.13505e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 03:00:00.000
-  Anomalia P: 1.48538e-43/1.10703e-43
   Anomalia O: 89.9
 -------------------------
 Paciente 1 | Fecha 25/06/2025 04:00:00.000
-  Anomalia P: 1.65353e-43/1.16308e-43
   Anomalia O: 91.8
 -------------------------
 Paciente 1 | Fecha 25/06/2025 05:00:00.000
-  Anomalia P: 1.37327e-43/1.09301e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 06:00:00.000
-  Anomalia P: 1.73761e-43/1.13505e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 07:00:00.000
-  Anomalia P: 1.73761e-43/1.26117e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 08:00:00.000
-  Anomalia P: 1.82169e-43/9.94922e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 09:00:00.000
-  Anomalia P: 1.75162e-43/1.12104e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 10:00:00.000
-  Anomalia P: 1.79366e-43/1.26117e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 11:00:00.000
-  Anomalia P: 1.34525e-43/9.10844e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 12:00:00.000
-  Anomalia P: 1.26117e-43/8.96831e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 13:00:00.000
   Anomalia T: 39.1
-  Anomalia P: 9.80909e-44/8.12753e-44
+  Anomalia P: 70/58
 -------------------------
 Paciente 1 | Fecha 25/06/2025 14:00:00.000
-  Anomalia P: 1.91978e-43/8.40779e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 15:00:00.000
   Anomalia T: 38.7
-  Anomalia P: 1.73761e-43/9.94922e-44
 -------------------------
 Paciente 1 | Fecha 25/06/2025 16:00:00.000
-  Anomalia P: 1.65353e-43/1.02295e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 17:00:00.000
-  Anomalia P: 1.8357e-43/9.94922e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 18:00:00.000
-  Anomalia P: 1.86373e-43/1.02295e-43
   Anomalia O: 87.7
 -------------------------
 Paciente 1 | Fecha 25/06/2025 19:00:00.000
-  Anomalia P: 1.31722e-43/1.20512e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 20:00:00.000
-  Anomalia P: 1.17709e-43/6.72623e-44
+  Anomalia P: 84/48
 -------------------------
 Paciente 1 | Fecha 25/06/2025 21:00:00.000
-  Anomalia P: 2.07392e-43/1.33123e-43
+  Anomalia P: 148/95
 -------------------------
 Paciente 1 | Fecha 25/06/2025 22:00:00.000
-  Anomalia P: 1.86373e-43/1.10703e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 23:00:00.000
-  Anomalia P: 1.48538e-43/1.02295e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 25/06/2025 23:52:30.040
   Todas las lecturas dentro de rango
@@ -492,10 +487,10 @@ Paciente 1 | Fecha 25/06/2025 23:52:35.560
   Todas las lecturas dentro de rango
 -------------------------
 Paciente 1 | Fecha 26/06/2025 00:00:00.000
-  Anomalia P: 1.93379e-43/1.16308e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 01:00:00.000
-  Anomalia P: 1.37327e-43/1.02295e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 01:12:15.040
   Anomalia ECG: min=-2.8272 max=-2.8272 (sumaAbs=5.65441 > limite=5.08737)
@@ -915,76 +910,72 @@ Paciente 2 | Fecha 25/06/2025 01:12:20.560
   Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 02:00:00.000
-  Anomalia P: 1.89175e-43/9.3887e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 03:00:00.000
-  Anomalia P: 2.20004e-43/1.35926e-43
+  Anomalia P: 157/97
 -------------------------
 Paciente 2 | Fecha 25/06/2025 04:00:00.000
-  Anomalia P: 1.31722e-43/1.05097e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 05:00:00.000
-  Anomalia P: 1.47136e-43/1.16308e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 06:00:00.000
-  Anomalia P: 2.31214e-43/1.27518e-43
+  Anomalia P: 165/91
 -------------------------
 Paciente 2 | Fecha 25/06/2025 07:00:00.000
-  Anomalia P: 1.27518e-43/1.24716e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 08:00:00.000
-  Anomalia P: 1.27518e-43/1.21913e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 09:00:00.000
   Anomalia T: 38.3
-  Anomalia P: 1.26117e-43/9.80909e-44
 -------------------------
 Paciente 2 | Fecha 25/06/2025 10:00:00.000
-  Anomalia P: 1.31722e-43/9.24857e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 11:00:00.000
-  Anomalia P: 1.7236e-43/1.16308e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 12:00:00.000
-  Anomalia P: 1.28919e-43/9.52883e-44
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 13:00:00.000
-  Anomalia P: 1.8357e-43/9.52883e-44
   Anomalia O: 86.1
 -------------------------
 Paciente 2 | Fecha 25/06/2025 14:00:00.000
-  Anomalia P: 1.52742e-43/1.12104e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 15:00:00.000
-  Anomalia P: 2.28412e-43/1.52742e-43
+  Anomalia P: 163/109
 -------------------------
 Paciente 2 | Fecha 25/06/2025 16:00:00.000
-  Anomalia P: 1.75162e-43/1.02295e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 17:00:00.000
-  Anomalia P: 1.9478e-43/1.23314e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 18:00:00.000
-  Anomalia P: 1.73761e-43/1.21913e-43
   Anomalia O: 93.8
 -------------------------
 Paciente 2 | Fecha 25/06/2025 19:00:00.000
-  Anomalia P: 2.32616e-43/1.49939e-43
+  Anomalia P: 166/107
 -------------------------
 Paciente 2 | Fecha 25/06/2025 20:00:00.000
-  Anomalia P: 1.44334e-43/1.00893e-43
   Anomalia O: 88.6
 -------------------------
 Paciente 2 | Fecha 25/06/2025 21:00:00.000
-  Anomalia P: 1.80768e-43/1.02295e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 25/06/2025 22:00:00.000
-  Anomalia P: 2.31214e-43/1.41531e-43
+  Anomalia P: 165/101
   Anomalia O: 85.6
 -------------------------
 Paciente 2 | Fecha 25/06/2025 23:00:00.000
-  Anomalia P: 1.69557e-43/1.03696e-43
+  Todas las lecturas dentro de rango
 -------------------------
 Paciente 2 | Fecha 26/06/2025 00:00:00.000
-  Anomalia P: 1.56945e-43/8.54792e-44
+  Todas las lecturas dentro de rango
 -------------------------

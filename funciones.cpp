@@ -690,7 +690,6 @@ bool exportar_pacientes_ecg_anomalos(const SalaUCI& sala, const PacientesData& p
             }
         }
     }
-
     // Escribimos binario simple: cantidad (u16) + ids (u8)
     FILE* f=fopen(rutaBin,"wb");
     if(!f) return false;
