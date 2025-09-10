@@ -363,7 +363,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
             med.idPaciente[idFieldSize - 1] = '\0';
 
 
-            char tmpFecha[25]; // 24 + 1
+            char tmpFecha[25];
             if (!archivo.read(tmpFecha, 24)) {
                 std::cerr << "Error leyendo fecha (maq " << (int)maqId << " med " << j+1 << ")\n";
                 liberar_sala(sala);
@@ -440,7 +440,7 @@ bool leer_bsf(const char* nombreArchivo, SalaUCI &sala) {
                     lec.p_dia = static_cast<int>(pd);
                 }
                 else if (tipo == 'T' || tipo == 'E' || tipo == 'O') {
-                    // double
+
                     double v = 0.0;
                     if (!archivo.read(reinterpret_cast<char*>(&v), sizeof(v))) {
                         std::cerr << "Error leyendo double (maq " << (int)maqId << " med " << j+1 << " lec " << k+1 << ")\n";
@@ -684,7 +684,7 @@ bool exportar_pacientes_ecg_anomalos(const SalaUCI& sala, const PacientesData& p
             for(int k=0;k<M.numLecturas;++k){
                 const Lectura& L=M.lecturas[k];
                 if(L.tipo==TS_E && (L.valor<mnE || L.valor>mxE)){
-                    int idNum = atoi(M.idPaciente); // convierte C-string a int
+                    int idNum = atoi(M.idPaciente);
                     marca[idNum] = true;
                 }
             }
